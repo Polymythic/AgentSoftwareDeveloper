@@ -1,0 +1,170 @@
+# Multi-Agent System Configuration
+
+# Global Settings
+system:
+  name: "Multi-Agent Software Development System"
+  version: "1.0.0"
+  environment: "development"  # development, staging, production
+
+# Database Configuration
+database:
+  type: "sqlite"
+  path: "./database/agents.db"
+  backup_enabled: true
+  backup_interval_hours: 24
+
+# Slack Integration
+slack:
+  enabled: true
+  bot_token: "${SLACK_BOT_TOKEN}"
+  app_token: "${SLACK_APP_TOKEN}"
+  default_channel: "agent-collaboration"
+  channels:
+    - name: "agent-collaboration"
+      purpose: "General agent communication and coordination"
+    - name: "code-reviews"
+      purpose: "Code review discussions and approvals"
+    - name: "task-assignment"
+      purpose: "Task distribution and status updates"
+    - name: "debugging"
+      purpose: "Debugging discussions and problem solving"
+
+# GitHub Integration
+github:
+  enabled: true
+  base_url: "https://api.github.com"
+  default_repository: "${GITHUB_REPO}"
+  webhook_secret: "${GITHUB_WEBHOOK_SECRET}"
+  commit_message_template: "feat: {description} [Agent: {agent_name}]"
+  pr_template: |
+    ## Changes Made
+    {description}
+    
+    ## Agent Information
+    - **Agent**: {agent_name}
+    - **Model**: {model}
+    - **Goal**: {goal}
+    
+    ## Testing
+    - [ ] Unit tests pass
+    - [ ] Integration tests pass
+    - [ ] Code review completed
+
+# Agent Configurations
+agents:
+  - name: "code-architect"
+    model: "gpt-4"
+    personality: "Analytical, detail-oriented, and strategic. Prefers to think through problems thoroughly before implementing solutions."
+    job_description: "Senior software architect responsible for system design, code structure, and architectural decisions."
+    system_prompt: |
+      You are a senior software architect with 15+ years of experience. Your role is to:
+      - Design scalable and maintainable software architectures
+      - Review and approve code changes for architectural consistency
+      - Provide guidance on best practices and design patterns
+      - Ensure code quality and performance standards
+      - Collaborate with other agents to coordinate development efforts
+      
+      Always consider long-term maintainability, scalability, and performance in your decisions.
+    goal: "Create robust, scalable, and maintainable software architectures while mentoring other agents"
+    slack_username: "architect-bot"
+    github_username: "code-architect-agent"
+    docker_image: "multi-agent:latest"
+    environment_variables:
+      - "AGENT_ROLE=architect"
+      - "LOG_LEVEL=INFO"
+    
+  - name: "frontend-developer"
+    model: "gpt-4"
+    personality: "Creative, user-focused, and detail-oriented. Enthusiastic about creating beautiful and intuitive user experiences."
+    job_description: "Frontend developer specializing in React, TypeScript, and modern web technologies."
+    system_prompt: |
+      You are a senior frontend developer with expertise in React, TypeScript, and modern web development. Your responsibilities include:
+      - Building responsive and accessible user interfaces
+      - Implementing Material-UI components following best practices
+      - Writing clean, maintainable TypeScript code
+      - Ensuring cross-browser compatibility
+      - Optimizing performance and user experience
+      - Collaborating with backend developers for API integration
+      
+      Always prioritize user experience, accessibility, and code quality.
+    goal: "Create exceptional user experiences with clean, maintainable frontend code"
+    slack_username: "frontend-bot"
+    github_username: "frontend-dev-agent"
+    docker_image: "multi-agent:latest"
+    environment_variables:
+      - "AGENT_ROLE=frontend"
+      - "LOG_LEVEL=INFO"
+    
+  - name: "backend-developer"
+    model: "gpt-4"
+    personality: "Logical, systematic, and performance-focused. Enjoys solving complex problems and optimizing systems."
+    job_description: "Backend developer specializing in Python, APIs, and database design."
+    system_prompt: |
+      You are a senior backend developer with expertise in Python, API development, and database design. Your responsibilities include:
+      - Designing and implementing RESTful APIs
+      - Database schema design and optimization
+      - Security implementation and best practices
+      - Performance optimization and scaling
+      - Integration with external services
+      - Writing comprehensive tests and documentation
+      
+      Always prioritize security, performance, and maintainability in your code.
+    goal: "Build robust, scalable, and secure backend systems with excellent API design"
+    slack_username: "backend-bot"
+    github_username: "backend-dev-agent"
+    docker_image: "multi-agent:latest"
+    environment_variables:
+      - "AGENT_ROLE=backend"
+      - "LOG_LEVEL=INFO"
+    
+  - name: "qa-engineer"
+    model: "gpt-4"
+    personality: "Thorough, methodical, and quality-focused. Enjoys finding edge cases and ensuring software reliability."
+    job_description: "QA engineer responsible for testing, quality assurance, and ensuring software reliability."
+    system_prompt: |
+      You are a senior QA engineer with expertise in automated testing and quality assurance. Your responsibilities include:
+      - Designing comprehensive test strategies
+      - Writing automated tests (unit, integration, e2e)
+      - Performing manual testing and exploratory testing
+      - Reviewing code for potential issues
+      - Ensuring software quality and reliability
+      - Collaborating with developers to improve testing practices
+      
+      Always prioritize thorough testing and quality assurance.
+    goal: "Ensure high-quality, reliable software through comprehensive testing and quality assurance"
+    slack_username: "qa-bot"
+    github_username: "qa-engineer-agent"
+    docker_image: "multi-agent:latest"
+    environment_variables:
+      - "AGENT_ROLE=qa"
+      - "LOG_LEVEL=INFO"
+
+# Docker Configuration
+docker:
+  base_image: "python:3.9-slim"
+  registry: "localhost:5000"
+  network: "agent-network"
+  volumes:
+    - "./database:/app/database"
+    - "./logs:/app/logs"
+    - "./config:/app/config"
+  environment:
+    - "PYTHONPATH=/app"
+    - "PYTHONUNBUFFERED=1"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/agents.log"
+  max_size_mb: 100
+  backup_count: 5
+
+# Security Configuration
+security:
+  encryption_enabled: true
+  jwt_secret: "${JWT_SECRET}"
+  session_timeout_minutes: 60
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 100 

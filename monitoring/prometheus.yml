@@ -1,0 +1,42 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Multi-Agent System
+  - job_name: 'multi-agent-system'
+    static_configs:
+      - targets: ['code-architect-agent:8000']
+        labels:
+          agent: 'code-architect'
+          role: 'architect'
+      - targets: ['frontend-developer-agent:8000']
+        labels:
+          agent: 'frontend-developer'
+          role: 'frontend'
+      - targets: ['backend-developer-agent:8000']
+        labels:
+          agent: 'backend-developer'
+          role: 'backend'
+      - targets: ['qa-engineer-agent:8000']
+        labels:
+          agent: 'qa-engineer'
+          role: 'qa'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Database
+  - job_name: 'database'
+    static_configs:
+      - targets: ['database:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 60s 
